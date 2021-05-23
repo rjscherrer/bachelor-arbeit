@@ -1,4 +1,9 @@
-# scraper for the department of homeland security
+#########################################################
+## DEPARTMENT OF HOMELAND SECURITY - SPEECHES
+#########################################################
+## this script scrapes all speeches of the secretary of the department
+## of homeland security
+
 source("config.R")
 source("corpus.R")
 

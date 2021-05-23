@@ -1,4 +1,8 @@
-# scraper for the department of energy news
+##############################################
+## DEPARTMENT OF ENERGY - BLOG POSTS
+##############################################
+## this script scrapes all blog posts of the department of energy
+
 source("config.R")
 source("corpus.R")
 

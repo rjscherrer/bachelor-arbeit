@@ -1,4 +1,8 @@
-# scraper for the department of sate
+###############################################
+## DEPARTMENT OF STATE - SPEECHES KERRY
+###############################################
+## this script scrapes all speeches of secretary kerry
+
 source("config.R")
 source("corpus.R")
 

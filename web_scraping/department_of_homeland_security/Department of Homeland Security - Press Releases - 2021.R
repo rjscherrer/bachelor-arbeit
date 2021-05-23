@@ -1,4 +1,8 @@
-# scraper for the department of homeland security
+#########################################################
+## DEPARTMENT OF HOMELAND SECURITY - PRESS RELEASES
+#########################################################
+## this script scrapes all press releases of the department of homeland security
+
 source("config.R")
 source("corpus.R")
 

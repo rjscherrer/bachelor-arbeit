@@ -1,4 +1,8 @@
-# scraper for the department of energy news
+##############################################
+## DEPARTMENT OF ENERGY - MEDIA ADVISORIES
+##############################################
+## this script scrapes all media advisories of the department of energy
+
 source("config.R")
 source("corpus.R")
 

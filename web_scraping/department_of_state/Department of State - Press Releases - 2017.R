@@ -1,4 +1,8 @@
-# scraper for the department of sate
+###############################################
+## DEPARTMENT OF STATE - PRESS RELEASES 2017
+###############################################
+## this script scrapes all press releases before 2017 of the department of state
+
 source("config.R")
 source("corpus.R")
 

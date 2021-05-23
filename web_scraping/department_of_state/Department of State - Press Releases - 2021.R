@@ -1,3 +1,9 @@
+###############################################
+## DEPARTMENT OF STATE - PRESS RELEASES 2021
+###############################################
+## this script scrapes all press releases after 2017 and before 2021
+## of the department of state
+
 # scraper for the department of state
 source("config.R")
 source("corpus.R")

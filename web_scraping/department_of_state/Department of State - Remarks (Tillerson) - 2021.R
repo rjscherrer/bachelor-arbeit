@@ -1,4 +1,8 @@
-# scraper for the department of state
+###############################################
+## DEPARTMENT OF STATE - SPEECHES TILLERSON
+###############################################
+## this script scrapes all speeches of secretary tillerson
+
 source("config.R")
 source("corpus.R")
 

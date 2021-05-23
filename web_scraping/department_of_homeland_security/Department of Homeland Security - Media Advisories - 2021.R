@@ -1,4 +1,8 @@
-# scraper for the department of homeland security
+#########################################################
+## DEPARTMENT OF HOMELAND SECURITY - MEDIA ADVISORIES
+#########################################################
+## this script scrapes all media advisories of the department of homeland security
+
 source("config.R")
 source("corpus.R")
 

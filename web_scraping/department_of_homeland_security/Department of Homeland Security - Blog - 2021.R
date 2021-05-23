@@ -1,4 +1,8 @@
-# scraper for the department of homeland security
+#########################################################
+## DEPARTMENT OF HOMELAND SECURITY - BLOG POSTS
+#########################################################
+## this script scrapes all blog posts of the department of homeland security
+
 source("config.R")
 source("corpus.R")
 

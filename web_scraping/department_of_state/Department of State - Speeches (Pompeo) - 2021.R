@@ -1,4 +1,8 @@
-# scraper for the department of state
+###############################################
+## DEPARTMENT OF STATE - SPEECHES POMPEO
+###############################################
+## this script scrapes all speeches of secretary pompeo
+
 source("config.R")
 source("corpus.R")
 
