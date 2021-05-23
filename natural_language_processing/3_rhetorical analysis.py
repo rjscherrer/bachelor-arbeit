@@ -1,22 +1,34 @@
+###########################################
+## 3 - RHETORICAL ANALYSIS
+###########################################
+"""
+this script is used for the rhetorical analysis. the analysis consists of the follwoing parts:
+
+- analysis 1: rhetorical analysis with all presidential phrases
+- analysis 2: evaluating phrases which could have a bad impact on the result
+- analysis 3: rhetorical analysis with removed phrases which could have a bad impact on the result (run together with analysis 1)
+
+the start of each part is indicated by a comment in the form "START ANALYSIS X" while the end of each part is indicated
+by a comment in the form "END ANALYSIS X". as they depend on each other they were not separated in order to prevent redundant code. 
+initially analysis 2 and analysis 3 are commented out. to run them they have to be uncommented.
+
+the processed data can be found in the folder "data/rhetorical_analysis"
+"""
+
 import sys
 import os
 import gensim
-import gensim.corpora as corpora
-import nltk
-import numpy as np
 import pandas as pd
 import re
 import spacy
 import pickle
 import tqdm
 
-sys.path.append("./scripts")
+sys.path.append("./helper_scripts")
 
 from gensim.utils import simple_preprocess
 from nltk.corpus import stopwords
-from lda_tester import LDATester
 from xml_corpus_reader import XMLCorpusReader
-from itertools import islice
 from tqdm import tqdm
 
 
@@ -66,7 +78,7 @@ def tag_phrase(phrarse):
 
 def build_ngrams(path_unprocessed_corpus, categories, bigram_vocab, trigram_vocab):
     print("STATUS: START BUILDING NGRAMS")
-    path_base = "persistent_computations/speech_analysis/"
+    path_base = "data/rhetorical_analysis/"
     path_bigrams = path_base + "-".join(categories).replace("/", "_") + "-bigrams.pckl"
     path_trigrams = (
         path_base + "-".join(categories).replace("/", "_") + "-trigrams.pckl"
@@ -219,19 +231,6 @@ def calc_phrase_statistics(phrases_obama, phrases_trump, phrases_corpus):
     )
     print("vier")
 
-    """
-    phrase_statistics["occ_corpus_total"] = phrase_statistics.apply(
-        lambda x: phrases_corpus.get(x["phrase"], 0), axis=1
-    )
-    print("fünf")
-
-    tqdm.pandas()
-    phrase_statistics["type"] = phrase_statistics.progress_apply(
-        lambda x: nlp(x["phrase"].decode("UTF-8"))[0].pos_, axis=1
-    )
-    print("sechs")
-    """
-
     phrase_statistics = phrase_statistics.sort_values(
         "importance", ascending=False, ignore_index=True
     )
@@ -242,7 +241,7 @@ def calc_phrase_statistics(phrases_obama, phrases_trump, phrases_corpus):
 
 def build_ngram_vocab(path_unprocessed_corpus, categories, file_name):
     print("STATUS: START BUILDING NGRAM VOCAB")
-    path_base = "persistent_computations/speech_analysis/"
+    path_base = "data/rhetorical_analysis/"
     path_bigram_vocab = (
         path_base + "-".join(file_name).replace("/", "_") + "-bigram_vocab.pckl"
     )
@@ -346,18 +345,21 @@ if __name__ == "__main__":
     PATH_UNPROCESSED_CORPUS = "../corpus"
     PATH_PROCESSED_CORPUS = "../pickled_corpus"
     PATH_PHRASE_STATISTICS_BIGRAMS = (
-        "persistent_computations/speech_analysis/phrase_statistics_bigrams.pckl"
+        "data/rhetorical_analysis/phrase_statistics_bigrams.pckl"
     )
     PATH_PHRASE_STATISTICS_BIGRAMS_DEP = (
-        "persistent_computations/speech_analysis/phrase_statistics_bigrams_dep.pckl"
+        "data/rhetorical_analysis/phrase_statistics_bigrams_dep.pckl"
     )
     PATH_PHRASE_STATISTICS_TRIGRAMS = (
-        "persistent_computations/speech_analysis/phrase_statistics_trigrams.pckl"
+        "data/rhetorical_analysis/phrase_statistics_trigrams.pckl"
     )
     PATH_PHRASE_STATISTICS_TRIGRAMS_DEP = (
-        "persistent_computations/speech_analysis/phrase_statistics_trigrams_dep.pckl"
+        "data/rhetorical_analysis/phrase_statistics_trigrams_dep.pckl"
     )
 
+    ##################################
+    ## START ANALYSIS 1
+    ##################################
     # get the bigram and trigram vocabulary of the whole corpus except presidential speeches
     corpus = XMLCorpusReader(root=PATH_UNPROCESSED_CORPUS)
     categories = corpus.categories()
@@ -424,9 +426,10 @@ if __name__ == "__main__":
         pickle.dump(phrase_statistics_trigrams, f)
         f.close()
 
-    #####################
-    ## Hier Analyse 3
-    #####################
+    ##################################
+    ## START ANALYSIS 3
+    ##################################
+    """
     excluded_terms = [
         "secretary",
         "obama",
@@ -466,9 +469,10 @@ if __name__ == "__main__":
             encoding="UTF-8", errors="strict"
         ).str.contains("|".join(excluded_terms))
     ]
-    #####################
-    ## Hier Analyse 3
-    #####################
+    """
+    ##################################
+    ## END ANALYSIS 3
+    ##################################
 
     # get vocab of departments
     vocab_categories = [
@@ -520,14 +524,12 @@ if __name__ == "__main__":
         [["department_of_state/trump/press_releases"], 1.02],
     ]
 
-    """
     for categories in vocab_categories:
         bigram_vocab, trigram_vocab = build_ngram_vocab(
             path_unprocessed_corpus=PATH_UNPROCESSED_CORPUS,
             categories=categories[0],
             file_name=categories[0],
         )
-    """
 
     # get occurencies in all departments
     significant_bigrams_obama = phrase_statistics_bigrams.query(
@@ -548,23 +550,6 @@ if __name__ == "__main__":
     significant_bigrams_trump = phrase_statistics_bigrams.query(
         'belongs_to == "trump"'
     ).sort_values("importance", ascending=False, ignore_index=True)[:1000]
-
-    """
-    KANN GEÖLSCHT WERDEN
-
-    phrase_statistics_trigrams["phrase"] = pd.Series(
-        phrase_statistics_trigrams["phrase"]
-    ).str.decode(encoding="UTF-8", errors="strict")
-
-    print(
-        phrase_statistics_trigrams[
-            phrase_statistics_trigrams["phrase"]
-            .str.decode(encoding="UTF-8", errors="strict")
-            .str.contains("donald_trump")
-            == False
-        ]
-    )
-    """
 
     significant_trigrams_trump = (
         phrase_statistics_trigrams[
@@ -591,15 +576,13 @@ if __name__ == "__main__":
                 "-".join(vocab_categorie[0]).replace("/", "_")
             ].sum(),
         )
+    ##################################
+    ## END ANALYSIS 1
+    ##################################
 
-    """
-    for phrase in significant_trigrams_trump[30:60]["phrase"]:
-        print(phrase.decode(encoding="UTF-8", errors="strict"))
-    """
-
-    ################################
-    ## Analyse 2
-    ################################
+    ##################################
+    ## START ANALYSIS 2
+    ##################################
     """
     corpus = XMLCorpusReader(root=PATH_UNPROCESSED_CORPUS)
     categories = corpus.categories()
@@ -723,64 +706,6 @@ if __name__ == "__main__":
     for phrase in phrase_statistics_trigrams_dep_trump[30:60]["phrase"]:
         print(phrase.decode(encoding="UTF-8", errors="strict"))
     """
-
-    ################################
-    ## Analyse 3
-    ################################
-    """
-    Kann gelöscht werden
-
-    # get bigram and trigram vocabulary of the presidential speeches
-    categories = ["presidential_speeches/obama"]
-    obama_bigram_dict, obama_trigram_dict = build_ngrams(
-        path_unprocessed_corpus=PATH_UNPROCESSED_CORPUS,
-        categories=categories,
-        bigram_vocab=bigram_vocab,
-        trigram_vocab=trigram_vocab,
-    )
-
-    categories = ["presidential_speeches/trump"]
-    trump_bigram_dict, trump_trigram_dict = build_ngrams(
-        path_unprocessed_corpus=PATH_UNPROCESSED_CORPUS,
-        categories=categories,
-        bigram_vocab=bigram_vocab,
-        trigram_vocab=trigram_vocab,
-    )
-
-    # correct for different number of words between obama and trump
-    obama_bigram_dict.update((x, round(y * 3.07)) for x, y in obama_bigram_dict.items())
-    obama_trigram_dict.update(
-        (x, round(y * 3.07)) for x, y in obama_trigram_dict.items()
-    )
-
-    # get final phrase statistics for bigrams and trigrams
-    # final bigram model
-    if os.path.exists(PATH_PHRASE_STATISTICS_BIGRAMS):
-        f = open(PATH_PHRASE_STATISTICS_BIGRAMS, "rb")
-        phrase_statistics_bigrams = pickle.load(f)
-        f.close()
-    else:
-        phrase_statistics_bigrams = calc_phrase_statistics(
-            phrases_obama=obama_bigram_dict,
-            phrases_trump=trump_bigram_dict,
-            phrases_corpus=bigram_vocab,
-        )
-        f = open(PATH_PHRASE_STATISTICS_BIGRAMS, "wb")
-        pickle.dump(phrase_statistics_bigrams, f)
-        f.close()
-
-    # final trigram model
-    if os.path.exists(PATH_PHRASE_STATISTICS_TRIGRAMS):
-        f = open(PATH_PHRASE_STATISTICS_TRIGRAMS, "rb")
-        phrase_statistics_trigrams = pickle.load(f)
-        f.close()
-    else:
-        phrase_statistics_trigrams = calc_phrase_statistics(
-            phrases_obama=obama_trigram_dict,
-            phrases_trump=trump_trigram_dict,
-            phrases_corpus=trigram_vocab,
-        )
-        f = open(PATH_PHRASE_STATISTICS_TRIGRAMS, "wb")
-        pickle.dump(phrase_statistics_trigrams, f)
-        f.close()
-    """
+    ##################################
+    ## END ANALYSIS 2
+    ##################################

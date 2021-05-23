@@ -95,14 +95,14 @@ class LDATester:
             pbar.close()
 
             pd.DataFrame(model_results).to_excel(
-                "./persistent_computations/lda_tuning_results-" + file_name + ".xlsx",
+                "./data/topic_modeling/lda_tuning_results-" + file_name + ".xlsx",
                 index=False,
             )
             print("STATUS: FINISHED OPTIMIZING LDA")
 
     def compute_lda(self, file_name, n_topics, alpha, beta):
         print("STATUS: START BUILDING MODEL")
-        path_base = "persistent_computations/"
+        path_base = "data/topic_modeling/"
         path_lda_model = path_base + file_name + "-lda_model.pckl"
         if os.path.exists(path_lda_model):
             f = open(path_lda_model, "rb")

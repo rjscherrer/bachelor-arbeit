@@ -1,15 +1,22 @@
+###########################################
+## 2 - TOPIC MODELING
+###########################################
+"""
+this script is used for the topic analysis. multiple lda models are built
+and tested. the best model is used for the topic analysis. the calculated
+cv measures for the lda models can be found in the folder "data/topic_modeling"
+"""
+
 import sys
 import os
 import gensim
 import gensim.corpora as corpora
-import nltk
-import numpy as np
 import pandas as pd
 import re
 import spacy
 import pickle
 
-sys.path.append("./scripts")
+sys.path.append("./helper_scripts")
 
 from gensim.utils import simple_preprocess
 from nltk.corpus import stopwords
@@ -39,8 +46,6 @@ def make_trigrams(texts, trigram_mod):
 
 
 def lemmatization(texts, allowed_postags=["NOUN", "ADJ", "VERB", "ADV"]):
-    """https://spacy.io/api/annotation"""
-    # initialize spacy 'en' model, keeping only tagger component
     nlp = spacy.load("en_core_web_sm", disable=["parser", "ner"])
 
     texts_out = []
@@ -55,7 +60,7 @@ def lemmatization(texts, allowed_postags=["NOUN", "ADJ", "VERB", "ADV"]):
 def prepare_data(path_unprocessed_corpus, categories):
     print("STATUS: START PREPARING DATA")
 
-    path_base = "persistent_computations/"
+    path_base = "data/topic_modeling/"
     path_id2word = path_base + "-".join(categories).replace("/", "_") + "-id2word.pckl"
     path_texts = path_base + "-".join(categories).replace("/", "_") + "-texts.pckl"
     path_corpus = path_base + "-".join(categories).replace("/", "_") + "-corpus.pckl"
@@ -142,25 +147,21 @@ if __name__ == "__main__":
     PRESIDENTIAL SPEECHES --> OBAMA
     """
     # prepare data
-    """
     categories = ["presidential_speeches/obama"]
     id2word, texts, corpus = prepare_data(
         path_unprocessed_corpus=PATH_UNPROCESSED_CORPUS,
         categories=categories,
     )
     lda_tester = LDATester(corpus=corpus, texts=texts, id2word=id2word)
-    """
 
     # build final model
     # relevance metric: 0.17
-    """
     lda_tester.compute_lda(
         file_name="-".join(categories).replace("/", "_"),
         n_topics=41,
         alpha=0.01,
         beta=0.31,
     )
-    """
 
     """
     PRESIDENTIAL SPEECHES --> TRUMP
@@ -493,9 +494,7 @@ if __name__ == "__main__":
     )
     """
 
-    # CODE BANK
-
-    # optimize number of topics
+    # optimize number of topics of an lda model
     """
     lda_tester.opt_lda(
         file_name="-".join(categories).replace("/", "_") + "-NTOPCIS",
@@ -507,7 +506,7 @@ if __name__ == "__main__":
     )
     """
 
-    # optimize hyperparameters
+    # optimize hyperparameters of an lda model
     """
     lda_tester.opt_lda(
         file_name="-".join(categories).replace("/", "_") + "-HYPERPARAMETERS",
@@ -518,5 +517,3 @@ if __name__ == "__main__":
         beta=list(np.arange(0.01, 1, 0.3)),
     )
     """
-
-    # https://community.alteryx.com/t5/Data-Science/Getting-to-the-Point-with-Topic-Modeling-Part-3-Interpreting-the/ba-p/614992
