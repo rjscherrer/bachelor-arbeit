@@ -1,3 +1,11 @@
+###########################################
+## XML CORUPUS READER
+###########################################
+"""
+this script is used to read the scraped data.
+it also provides methods to get basic descriptive statistics.
+"""
+
 from nltk.corpus.reader.api import CorpusReader, CategorizedCorpusReader
 from nltk import sent_tokenize, wordpunct_tokenize, pos_tag, FreqDist
 from bs4 import BeautifulSoup
@@ -5,7 +13,6 @@ from bs4 import BeautifulSoup
 import time
 import codecs
 import os
-import xml.etree.ElementTree as ET
 
 
 class XMLCorpusReader(CategorizedCorpusReader, CorpusReader):
@@ -19,11 +26,11 @@ class XMLCorpusReader(CategorizedCorpusReader, CorpusReader):
         ``CorpusReader`` constructor.
         """
 
-        # Add default category pattern if not passed into the class
+        # add default category pattern if not passed into the class
         if not any(key.startswith("cat_") for key in kwargs.keys()):
             kwargs["cat_pattern"] = self.CAT_PATTERN
 
-        # Initialize the NLTK corpus reader objects
+        # initialize the NLTK corpus reader objects
         CorpusReader.__init__(self, root, fileids, encoding)
         CategorizedCorpusReader.__init__(self, kwargs)
 
@@ -46,10 +53,10 @@ class XMLCorpusReader(CategorizedCorpusReader, CorpusReader):
         it in a memory safe fashion.
         """
 
-        # Resolve the fileids and the categories
+        # resolve the fileids and the categories
         fileids = self.resolve(fileids, categories)
 
-        # Create a generator loading one document into memory at a time
+        # create a generator loading one document into memory at a time
         for path, encoding in self.abspaths(fileids, include_encoding=True):
             with codecs.open(path, "r", encoding=encoding) as f:
                 yield f.read()
@@ -60,10 +67,10 @@ class XMLCorpusReader(CategorizedCorpusReader, CorpusReader):
         This function is used to detect oddly large files in the corpus.
         """
 
-        # Resolve the fileids and the categories
+        # resolve the fileids and the categories
         fileids = self.resolve(fileids, categories)
 
-        # Create a generator, getting every path and computing filesize
+        # create a generator, getting every path and computing filesize
         for path in self.abspaths(fileids):
             yield os.path.getsize(path)
 
@@ -114,11 +121,11 @@ class XMLCorpusReader(CategorizedCorpusReader, CorpusReader):
 
         started = time.time()
 
-        # Structures to perform counting.
+        # structures to perform counting.
         counts = FreqDist()
         tokens = FreqDist()
 
-        # Perform single pass over paragraphs, tokenize and count
+        # perform single pass over paragraphs, tokenize and count
         for para in self.paras(fileids, categories):
             counts["paras"] += 1
 
@@ -129,11 +136,11 @@ class XMLCorpusReader(CategorizedCorpusReader, CorpusReader):
                     counts["words"] += 1
                     tokens[word] += 1
 
-        # Compute the number of files and categories in the corpus
+        # compute the number of files and categories in the corpus
         n_fileids = len(self.resolve(fileids, categories) or self.fileids())
         n_topics = len(self.categories(self.resolve(fileids, categories)))
 
-        # Return data structure with information
+        # return data structure with information
         return {
             "files": n_fileids,
             "topics": n_topics,

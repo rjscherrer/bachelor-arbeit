@@ -1,4 +1,11 @@
-import numpy as np
+###########################################
+## LDA TESTER
+###########################################
+"""
+this script is used to optimize the lda models used for the topic modeling.
+the output of the script can be found in the folder "data/topic_modeling".
+"""
+
 import tqdm
 import gensim
 import pandas as pd

@@ -474,7 +474,9 @@ if __name__ == "__main__":
     ## END ANALYSIS 3
     ##################################
 
-    # get vocab of departments
+    # list of all data categories containing a coefficient indicating
+    # the different wordcount of a category between the presidency of
+    # obama and trump (see 1_descriptive statistics.py).
     vocab_categories = [
         [["department_of_energy/obama/speeches"], 1.39],
         [
@@ -653,6 +655,7 @@ if __name__ == "__main__":
         pickle.dump(phrase_statistics_trigrams_dep, f)
         f.close()
 
+    # exclcude phrases containing bad terms
     excluded_terms = [
         b"else_if",
         b"typeof_undefined",
